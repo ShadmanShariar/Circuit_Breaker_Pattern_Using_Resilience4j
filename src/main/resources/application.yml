@@ -1,0 +1,23 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10      # শেষ 10 টা রিকোয়েস্ট ট্র্যাক করবে
+        minimumNumberOfCalls: 5    # মিনিমাম 5 টা রিকোয়েস্ট হলেই Circuit Breaker সিদ্ধান্ত নেবে
+        failureRateThreshold: 50   # 50% রিকোয়েস্ট ফেইল হলে Circuit Breaker OPEN হবে
+        slowCallRateThreshold: 50  # স্লো রেসপন্স ৫০% ছাড়ালে Circuit Breaker ACTIVE হবে
+        slowCallDurationThreshold: 2s  # যদি 2 সেকেন্ডের বেশি লাগে, তাহলে slow request হিসেবে গণ্য হবে
+        waitDurationInOpenState: 5s    # 5 সেকেন্ড পর ফের Half-Open হবে
+        permittedNumberOfCallsInHalfOpenState: 2  # Half-Open স্টেটে 2 টা রিকোয়েস্ট ট্রাই করবে
+        automaticTransitionFromOpenToHalfOpenEnabled: true # Auto transition Active
+        registerHealthIndicator: true # Actuator-এ Health Check Active করবে
+    instances:
+      myServiceCircuitBreaker:
+        baseConfig: default
+
